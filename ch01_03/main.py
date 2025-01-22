@@ -1,7 +1,8 @@
 import sys, os
-sys.path.append(os.pardir)
-import numpy as np
+# sys.path.append(os.pardir)
+sys.path.append(os.getcwd())
 from dataset.mnist import load_mnist
+import numpy as np
 import pickle
 
 def sigmoid(x):
@@ -41,6 +42,7 @@ def predict(network, x):
     return y
 
 if __name__ == "__main__":
+
     x, t = get_data()
     network = init_network()
 
