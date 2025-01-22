@@ -8,6 +8,9 @@ def cross_entropy_error(y, t):
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
 
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+
     batch_size = y.shape[0]
     return -np.sum(t * np.log(y + 1e-7)) / batch_size
 
@@ -23,3 +26,4 @@ def softmax(a):
     exp_a = np.exp(a-c)
     sum_exp_a = np.sum(a)
     y = exp_a / sum_exp_a
+    return y
