@@ -34,7 +34,7 @@ class SimpleNet:
         y = softmax(z)
         loss = cross_entropy_error(y, t)
         return loss
-
+    
 if __name__ == "__main__":
     net = SimpleNet()
     print(net.W)
@@ -44,3 +44,6 @@ if __name__ == "__main__":
     print(np.argmax(p))
     t = np.array([0, 0, 1])
     print(net.loss(x, t))
+
+    f = lambda w: net.loss(x, t)
+    print(numerical_gradient(f, net.W))
