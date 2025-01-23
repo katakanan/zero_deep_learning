@@ -31,3 +31,17 @@ def softmax(x):
 #     sum_exp_a = np.sum(a)
 #     y = exp_a / sum_exp_a
 #     return y
+
+def function_1(x):
+    return 0.01*x**2 + 0.1*x
+
+def function_2(x):
+    return x[0]**2 + x[1]**2
+
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x
+    for i in range(step_num):
+        grad = numerical_gradient(f, x)
+        x -= lr * grad
+
+    return x
