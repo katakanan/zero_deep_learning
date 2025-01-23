@@ -24,7 +24,8 @@ def gradient_descent(f, init_x, lr=0.01, step_num=100):
 
 class SimpleNet:
     def __init__(self):
-        self.W = np.random.randn(2, 3)
+        # self.W = np.random.randn(2, 3)
+        self.W = np.array([[0.47355232, 0.9977393, 0.84668094],[0.85557411, 0.03563661, 0.69422093]])
     
     def predict(self, x):
         return np.dot(x, self.W)
