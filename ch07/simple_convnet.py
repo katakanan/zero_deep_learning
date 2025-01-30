@@ -13,7 +13,7 @@ class Convolution:
         self.stride = stride
         self.pad = pad
 
-    def foward(self, x):
+    def forward(self, x):
         FN, C, FH, FW = self.W.shape
         N, C, H, W = x.shape
         out_h = int(1 + (H + 2*self.pad - FH) / self.stride)
@@ -51,11 +51,11 @@ class Pooling:
         out_w = int(1 + (W - self.pool_w) / self.stride)
 
         col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
-        col = col.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+        col = col.reshape(-1, self.pool_h*self.pool_w)
 
         out = np.max(col, axis=1)
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
-
+        return out
 
     def backward(self, dout):
         dout = dout.transpose(0, 2, 3, 1)
@@ -117,12 +117,9 @@ class SimpleConvNet:
             dout = layer.backward(dout)
 
         grads = {}
-        grads['W1'] = self.layers['Conv1'].dW
-        grads['b1'] = self.layers['Conv1'].db
-        grads['W2'] = self.layers['Affine1'].dW
-        grads['b2'] = self.layers['Affine1'].db
-        grads['W3'] = self.layers['Affine2'].dW
-        grads['b3'] = self.layers['Affine2'].db
+        grads['W1'], grads['b1'] = self.layers['Conv1'].dW, self.layers['Conv1'].db
+        grads['W2'], grads['b2'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
+        grads['W3'], grads['b3'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
         return grads
 
 
