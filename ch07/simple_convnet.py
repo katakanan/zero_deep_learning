@@ -23,6 +23,9 @@ class Convolution:
         col_W = self.W.reshape(FN, -1).T
         out = np.dot(col, col_W) + self.b
         out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
+        self.x = x
+        self.col = col
+        self.col_W = col_W
         return out
     
     def backward(self, dout):
@@ -44,6 +47,8 @@ class Pooling:
         self.pool_w = pool_w
         self.stride = stride
         self.pad = pad
+        self.x = None
+        self.arg_max = None
 
     def forward(self, x):
         N, C, H, W = x.shape
@@ -54,7 +59,10 @@ class Pooling:
         col = col.reshape(-1, self.pool_h*self.pool_w)
 
         out = np.max(col, axis=1)
+        arg_max = np.argmax(col, axis=1)
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+        self.x = x
+        self.arg_max = arg_max
         return out
 
     def backward(self, dout):
@@ -104,7 +112,7 @@ class SimpleConvNet:
     
     def loss(self, x, t):
         y = self.predict(x)
-        return self.last_layer.forward(x, t)
+        return self.last_layer.forward(y, t)
     
     def gradient(self, x, t):
         self.loss(x, t)
@@ -121,6 +129,20 @@ class SimpleConvNet:
         grads['W2'], grads['b2'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
         grads['W3'], grads['b3'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
         return grads
+    
+    def accuracy(self, x, t, batch_size=100):
+        if t.ndim != 1 : t = np.argmax(t, axis=1)
+        
+        acc = 0.0
+        
+        for i in range(int(x.shape[0] / batch_size)):
+            tx = x[i*batch_size:(i+1)*batch_size]
+            tt = t[i*batch_size:(i+1)*batch_size]
+            y = self.predict(tx)
+            y = np.argmax(y, axis=1)
+            acc += np.sum(y == tt) 
+        
+        return acc / x.shape[0]
 
 
 if __name__ == "__main__":
