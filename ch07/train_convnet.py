@@ -12,8 +12,8 @@ if __name__ == "__main__":
     (x_train, t_train), (x_test, t_test) = load_mnist(flatten=False)
 
     # 処理に時間のかかる場合はデータを削減 
-    #x_train, t_train = x_train[:5000], t_train[:5000]
-    #x_test, t_test = x_test[:1000], t_test[:1000]
+    x_train, t_train = x_train[:5000], t_train[:5000]
+    x_test, t_test = x_test[:1000], t_test[:1000]
 
     max_epochs = 20
 
