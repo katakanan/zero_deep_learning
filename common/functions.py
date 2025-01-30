@@ -1,4 +1,5 @@
 import numpy as np
+from common.gradient import numerical_gradient
 
 def sum_square_error(y, t):
     return 0.5*np.sum((y-t)**2)
